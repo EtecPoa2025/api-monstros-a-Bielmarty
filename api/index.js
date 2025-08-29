@@ -23,8 +23,7 @@ const monstros = require('./monstros.json');
 app.get('/monstros', (req, res) => {
     // Retorna a array de monstros como uma resposta JSON
     const habitatMonstro = req.query.habitat_monstro;
-    const danoMonstroFraco = req.query.dano_monstro;
-    const danoMonstroforte = req.query.dano_monstro;
+    const danoMonstro = req.query.dano_monstro;
 
     let resultado = monstros; 
     if (habitatMonstro) {

@@ -19,27 +19,29 @@ const monstros = require('./monstros.json');
 
 // Rota GET para listar todos os monstros
 // Quando alguém fizer uma requisição GET para a URL base + '/monstros'
-// (ex: http://localhost:3000/monstros), esta função será executada.
-app.get('/monstros', (req, res) => {
+// (ex: http://localhost:3000/monstros), esta função será executada.        
     // Retorna a array de monstros como uma resposta JSON
+    app.get('/monstros', (req, res) => {
     const habitatMonstro = req.query.habitat_monstro;
-    const danoMonstro = req.query.dano_monstro;
+    const danoMonstroFraco = req.query.dano_monstroFraco;
+    const danoMonstroForte = req.query.dano_monstroForte;
 
-    let resultado = monstros; 
+    let resultado = monstros;
+
     if (habitatMonstro) {
-    resultado = resultado.filter(m => m.habitat_monstro == habitatMonstro);
+        resultado = resultado.filter(m => m.habitat_monstro == habitatMonstro);
     }
-    
+
     if (danoMonstroFraco) {
-    resultado = resultado.filter(m => m.dano_monstro <= danoMonstro);
+        resultado = resultado.filter(m => m.dano_monstro <= (danoMonstroFraco));
     }
 
-    if (danoMonstroforte) {
-    resultado = resultado.filter(m => m.dano_monstro >= danoMonstro);
+    if (danoMonstroForte) {
+        resultado = resultado.filter(m => m.dano_monstro >= (danoMonstroForte));
     }
-    res.json(monstros);
+
+    res.json(resultado);
 });
-
 
 //GRUPO SCP
 

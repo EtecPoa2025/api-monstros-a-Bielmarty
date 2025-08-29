@@ -22,6 +22,22 @@ const monstros = require('./monstros.json');
 // (ex: http://localhost:3000/monstros), esta função será executada.
 app.get('/monstros', (req, res) => {
     // Retorna a array de monstros como uma resposta JSON
+    const habitatMonstro = req.query.habitat_monstro;
+    const danoMonstroFraco = req.query.dano_monstro;
+    const danoMonstroforte = req.query.dano_monstro;
+
+    let resultado = monstros; 
+    if (habitatMonstro) {
+    resultado = resultado.filter(m => m.habitat_monstro == habitatMonstro);
+    }
+    
+    if (danoMonstroFraco) {
+    resultado = resultado.filter(m => m.dano_monstro <= danoMonstro);
+    }
+
+    if (danoMonstroforte) {
+    resultado = resultado.filter(m => m.dano_monstro >= danoMonstro);
+    }
     res.json(monstros);
 });
 

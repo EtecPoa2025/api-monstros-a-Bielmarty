@@ -25,6 +25,7 @@ app.get('/monstros', (req, res) => {
     res.json(monstros);
 });
 
+/*
 // Rota GET para retornar um monstro by ID
 app.get('/monstros/:monstro_id', (req, res) => {
 
@@ -40,7 +41,7 @@ app.get('/monstros/:monstro_id', (req, res) => {
         res.status(404).json({ erro: 'Nenhum monstro encontrado.' });
     }
 });
-
+*/
 
 // --- Iniciar o Servidor ---
 

@@ -1,6 +1,13 @@
 // 1. Importar o módulo Express
 const express = require('express');
 const cors = require('cors');
+const database = require('better-sqlite3');
+const path = require('path');
+
+const DB_FILE = path.join(__dirname, 'monstros.db');
+
+const db = new database(DB_FILE);
+
 
 // 2. Criar uma instância do aplicativo Express
 const app = express();
@@ -13,10 +20,26 @@ const PORT = process.env.PORT || 3000;
 
 // --- Dados Temporários em Memória ---
 // Agora os monstros são carregados de um arquivo JSON externo.
-const monstros = require('./monstros.json');
 
 // --- Rotas da API ---
+app.get('/monstros/:monstros_id', (req, res) => {
+    const id = number(req.params.monstros_id);
+    const monstro = db.getMonstrosById(id);
 
+    if (monstro){
+        res.json(monstro);
+    }
+    else {
+        res.status(400).json({Erro: "Nenhum monstro foi encontrado :/"})
+    }
+})
+
+
+app.post('/monstros', (req, res) => {
+    const corpo = req.body;
+    const novo_Monstro = insertMonstro(corpo);
+    return res.status(201).json(novo_Monstro);
+})
 // Rota GET para listar todos os monstros
 // Quando alguém fizer uma requisição GET para a URL base + '/monstros'
 // (ex: http://localhost:3000/monstros), esta função será executada.        
@@ -26,7 +49,7 @@ const monstros = require('./monstros.json');
     const danoMonstroFraco = req.query.dano_monstroFraco;
     const danoMonstroForte = req.query.dano_monstroForte;
 
-    let resultado = monstros;
+    let resultado = getAllMonstros();
 
     if (habitatMonstro) {
         resultado = resultado.filter(m => m.habitat_monstro == habitatMonstro);
@@ -55,6 +78,43 @@ if (monstros.length > 0) {
        
 }
 });
+
+function getAllMonstros(){
+    const resultado = db.prepare('Select * from monstros')
+    return resultado.all();
+}
+
+function getMonstrosById(id){
+    const resultado = db.prepare('Select * from monstros where id= ?')
+    return resultado.get(id);
+}
+
+function insertMonstro(monstro){
+    const resultado = db.prepare(`
+        insert into monstros (
+        nome, 
+        imagem,
+        descricao,
+        tipo_criatura,
+        pontos_vida,
+        ataque,
+        defesa,
+        habitat
+        )
+        values (@nome, @imagem, @descricao, @tipo criatura, @pontos_vida, @ataque, @defesa, @habitat) 
+        `)
+    const novo = resultado.run({
+        nome: monstro.nome, 
+        imagem: monstro.imagem,
+        descricao: monstro.descricao,
+        tipo_criatura: monstro.tipo_criatura,
+        pontos_vida: monstro.pontos_vida,
+        ataque: monstro.ataque,
+        defesa: monstro.defesa,
+        habitat: monstro.habitat
+    })
+    return getMonstrosById(novo.LastInsertedRowid)
+}
 
 /*
 // Rota GET para retornar um monstro by ID
